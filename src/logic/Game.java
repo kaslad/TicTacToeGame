@@ -1,13 +1,32 @@
+package logic;
+
+import logic.Player;
+
 public class Game {
     private Player[] gameTable = new Player[9];
-    char firstLetter = 'X';
 
+    public Player[] getGameTable() {
+        return gameTable;
+    }
+
+    public void setGameTable(Player[] gameTable) {
+        this.gameTable = gameTable;
+    }
+
+    public char getFirstLetter() {
+        return firstLetter;
+    }
+
+    public void setFirstLetter(char firstLetter) {
+        this.firstLetter = firstLetter;
+    }
+
+    private char firstLetter = 'X';
     public Game() {
         for(int i = 0; i < gameTable.length; i++){
             gameTable[i] = null;
         }
     }
-
     private Player currentPlayer;
 
     public Player getCurrentPlayer() {
@@ -18,6 +37,15 @@ public class Game {
         this.currentPlayer = currentPlayer;
     }
 
+    public boolean tableFilledUp() {
+        for (Player player : gameTable) {
+            if (player == null) {
+                return false;
+            }
+        }
+        return true;
+
+    }
 
     public boolean checkEnd() {
         return
@@ -32,14 +60,14 @@ public class Game {
                 ;
     }
 
-    public boolean tableFilledUp() {
-        for(Player player: gameTable){
-            if(player == null){
-                return false;
-            }
+    public synchronized boolean legalMove(int where, Player player) {
+        if (player == currentPlayer && gameTable[where] == null) {
+            gameTable[where] = currentPlayer;
+            currentPlayer = currentPlayer.getOpponent();
+            currentPlayer.otherPlayerMoved(where);
+            return true;
         }
-        return true;
-
+        return false;
     }
 
 }
